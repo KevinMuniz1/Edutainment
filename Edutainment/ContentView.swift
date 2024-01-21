@@ -7,9 +7,41 @@
 
 import SwiftUI
 
+
+func generateQuestions() -> [String] {
+    var questions = [String]()
+    for i in 2...12 {
+        for j in 1...12 {
+            questions.append("\(i) x \(j)")
+        }
+    }
+    return questions
+}
+
+func generateAnswers() -> [String] {
+    var answers = [String]()
+    for i in 2...12 {
+        for j in 1...12 {
+            answers.append("\(i * j)")
+        }
+    }
+    return answers
+}
+
+func checkAnswer(number: Int) {
+    
+    let question = generateQuestions()
+    let answer = generateAnswers()
+    
+    
+    
+}
+
+
+
 struct ContentView: View {
-    private var animalImage = ["bear", "giraffe","chick", "crocodile", "owl", "penguin", "zebra", "whale", "walrus", "snake", "sloth", "pig", "monkey"]
-    private static var questions = [String]()
+    @State private var animalImage = ["bear", "giraffe","chick", "crocodile", "owl", "penguin", "zebra", "whale", "walrus", "snake", "sloth", "pig", "monkey"]
+    @State private var question = generateQuestions()
     @State private var animationAmount = 1.0
     @State private var appIsActive = false
     @State private var timesTables = 6
@@ -18,12 +50,12 @@ struct ContentView: View {
     @State private var userAnswer = 0
     var body: some View {
         if !appIsActive{
-            Text("Edutainment")
-                .font(.title).bold()
-                .frame(maxWidth: .infinity)
-                .background(.blue)
-                .foregroundStyle(.white)
             VStack(){
+                Text("Edutainment")
+                    .font(.title).bold()
+                    .frame(maxWidth: .infinity)
+                    .background(.blue)
+                    .foregroundStyle(.white)
                 Image("bear")
                     .frame(maxWidth: .infinity, alignment: .center)
                     .padding()
@@ -61,13 +93,13 @@ struct ContentView: View {
         } else {
             Text("Edutainment")
                 .font(.title).bold()
-                .frame(maxWidth: .infinity)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .padding()
                 .background(.blue)
                 .foregroundStyle(.white)
-            VStack{
                 VStack{
                     VStack(spacing: 15){
-                        Text("2 x 4")
+                        Text(question[0])
                             .font(.system(size: 80)).bold()
                             .foregroundStyle(.blue)
                             .padding()
@@ -86,13 +118,18 @@ struct ContentView: View {
                                         
                                     }
                             Button("Go"){
-                                
+                                checkAnswer(number: userAnswer)
+                                question = question.shuffled()
+                                withAnimation {
+                                    animalImage = animalImage.shuffled()
+                                }
+                                userAnswer = 0
                             }.frame(width: 50, height: 50)
                                 .background(.blue)
                                 .foregroundStyle(.white)
                                 .clipShape(.rect(cornerRadius: 10))
                         }
-                        Image(animalImage.randomElement() ?? "bear")
+                        Image(animalImage[0])
                             .resizable()
                             .scaledToFit()
                             .frame(width: 125, height: 200, alignment: .bottomTrailing)
@@ -102,15 +139,12 @@ struct ContentView: View {
                     .background(.regularMaterial)
                     .background(.gray)
                     .clipShape(.rect(cornerRadius: 10))
+                    .padding(50)
                 
                 Text("Score: \(score)")
                     .font(.largeTitle).bold()
                     .foregroundStyle(.blue)
                     .padding()
-                
-                
-            }.frame(maxWidth: .infinity, maxHeight: .infinity)
-                .ignoresSafeArea(.all)
         }
     }
 }
