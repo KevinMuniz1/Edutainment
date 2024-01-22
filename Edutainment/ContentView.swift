@@ -11,21 +11,18 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var animalImage = ["bear", "giraffe","chick", "crocodile", "owl", "penguin", "zebra", "whale", "walrus", "snake", "sloth", "pig", "monkey"]
-    
-    @State private var animationAmount = 1.0
-    @State private var allQuestions = [String]()
-    @State private var allAnswers = [Int]()
     @State private var questionsAndAnswer: [String : Int] = [:]
-    @State private var currentQuestion: String = ""
     private var currentAnswer: Int {
         questionsAndAnswer[currentQuestion] ?? 0
     }
-    @State private var appIsActive = false
+    @State private var animationAmount = 1.0
+    @State private var currentQuestion: String = ""
     @State private var timesTables = 6
     @State private var questionAmount = 10
     @State private var questionsAnswered = 0
     @State private var score = 0
     @State var userAnswer = 0
+    @State private var appIsActive = false
     @State private var isGameOver = false
     var body: some View {
         if !appIsActive{
