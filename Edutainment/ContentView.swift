@@ -132,11 +132,12 @@ struct ContentView: View {
                             Button("Restart") {
                                 score = 0
                                 questionsAnswered = 0
-                                questionAmount = questionAmount
                                 askQuestion()
                             }
                             
                             Button("Change Settings") {
+                                questionsAndAnswer.removeAll()
+                                print(questionsAndAnswer)
                                 withAnimation {
                                     appIsActive = false
                                 }
@@ -170,7 +171,7 @@ struct ContentView: View {
     
     func checkAnswer(answer: String) {
         if answer == correctAnswer {
-            score += 1
+                score += 1
         } else {
             print("wrong")
         }
