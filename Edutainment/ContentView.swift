@@ -11,14 +11,22 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var animalImage = ["bear", "giraffe","chick", "crocodile", "owl", "penguin", "zebra", "whale", "walrus", "snake", "sloth", "pig", "monkey"]
+    
     @State private var animationAmount = 1.0
-    @State private var question = "4 x 2"
+    @State private var allQuestions = [String]()
+    @State private var allAnswers = [Int]()
+    @State private var questionsAndAnswer: [String : Int] = [:]
+    @State private var currentQuestion: String = ""
+    private var currentAnswer: Int {
+        questionsAndAnswer[currentQuestion] ?? 0
+    }
     @State private var appIsActive = false
     @State private var timesTables = 6
     @State private var questionAmount = 10
     @State private var questionsAnswered = 0
     @State private var score = 0
-    @State private var userAnswer = 0
+    @State var userAnswer = 0
+    @State private var isGameOver = false
     var body: some View {
         if !appIsActive{
             VStack(){
@@ -43,6 +51,9 @@ struct ContentView: View {
                         .font(.headline)
                         .padding()
                     Button("Start Game"){
+                        score = 0
+                        questionsAnswered = 0
+                        createQuestionAndAnswer(number: timesTables)
                         askQuestion()
                         withAnimation {
                             appIsActive = true
@@ -71,7 +82,7 @@ struct ContentView: View {
                 .foregroundStyle(.white)
                 VStack{
                     VStack(spacing: 15){
-                        Text(question)
+                        Text(currentQuestion)
                             .font(.system(size: 80)).bold()
                             .foregroundStyle(.blue)
                             .padding()
@@ -80,16 +91,16 @@ struct ContentView: View {
                             .padding()
                         HStack {
                                 TextField("Answer", value: $userAnswer, formatter: NumberFormatter())
-                                    .frame(width: 125, height: 50)
-                                    .background(.blue)
-                                    .foregroundStyle(.white)
+                                .textFieldStyle(.roundedBorder)
+                                    .padding(10)
                                     .font(.headline).multilineTextAlignment(.center)
                                     .clipShape(.rect(cornerRadius: 10))
-                                    .keyboardType(.numberPad)
+                                    .keyboardType(.numberPad).ignoresSafeArea(.all)
                                     .onSubmit {
                                         
                                     }
                             Button("Go"){
+                                checkAnswer(answer: userAnswer)
                                 askQuestion()
                                 withAnimation {
                                     animalImage = animalImage.shuffled()
@@ -100,10 +111,18 @@ struct ContentView: View {
                                 .foregroundStyle(.white)
                                 .clipShape(.rect(cornerRadius: 10))
                         }
-                        Image(animalImage[0])
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 125, height: 200, alignment: .bottomTrailing)
+                        HStack {
+                            Image(animalImage[0])
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 125, height: 200, alignment: .bottomTrailing)
+                            
+                            Text("Score: \(score)")
+                                .font(.largeTitle).bold()
+                                .foregroundStyle(.blue)
+                                .padding()
+                                .offset(y: 50)
+                        }
                     }
                     
                 }.frame(width: 300, height: 500)
@@ -111,36 +130,55 @@ struct ContentView: View {
                     .background(.gray)
                     .clipShape(.rect(cornerRadius: 10))
                     .padding(50)
-                Text("Score: \(score)")
-                    .font(.largeTitle).bold()
-                    .foregroundStyle(.blue)
-                    .padding()
+                    .alert("Game Over", isPresented: $isGameOver) {
+                        HStack {
+                            Button("Restart") {
+                                score = 0
+                                questionsAnswered = 0
+                                questionAmount = questionAmount
+                                askQuestion()
+                            }
+                            
+                            Button("Change Settings") {
+                                withAnimation {
+                                    appIsActive = false
+                                }
+                            }
+                        }
+                    }message: {
+                        Text("Your final score was \(score) out of \(questionAmount)")
+                    }
         }
     }
     
-    func askQuestion() {
-        let questions = generateQuestions(number: timesTables)
-        let randomQuestion = questions.randomElement()
-        if questionsAnswered != questionAmount {
-            question = randomQuestion!
-        }
-    }
-    func checkAnswer(answer: Int) {
-        
-        questionsAnswered += 1
-    }
-    
-    
-    func generateQuestions(number: Int) -> [String] {
-        var questions = [String]()
+    func createQuestionAndAnswer(number: Int) {
         for i in 2...number {
             for j in 1...12 {
-                questions.append("\(i) x \(j)")
+                questionsAndAnswer["\(i) x \(j)"] = i * j
             }
         }
-        print(questions)
-        return questions
+        print(questionsAndAnswer)
     }
+    
+    
+    func askQuestion() {
+        if questionsAnswered >= questionAmount {
+            isGameOver = true
+            return
+        } else {
+            currentQuestion = questionsAndAnswer.keys.randomElement() ?? "None"
+            questionsAnswered += 1
+        }
+    }
+    
+    func checkAnswer(answer: Int) {
+        if answer == currentAnswer {
+            score += 1
+        } else {
+            print("wrong")
+        }
+    }
+
 
 }
 
