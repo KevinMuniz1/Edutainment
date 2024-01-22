@@ -12,11 +12,11 @@ import SwiftUI
 struct ContentView: View {
     @State private var animalImage = ["bear", "giraffe","chick", "crocodile", "owl", "penguin", "zebra", "whale", "walrus", "snake", "sloth", "pig", "monkey"]
     @State private var questionsAndAnswer: [String : Int] = [:]
-    private var currentAnswer: Int {
-        questionsAndAnswer[currentQuestion] ?? 0
-    }
     @State private var animationAmount = 1.0
     @State private var currentQuestion: String = ""
+    private var correctAnswer: Int {
+        questionsAndAnswer[currentQuestion] ?? 0
+    }
     @State private var timesTables = 6
     @State private var questionAmount = 10
     @State private var questionsAnswered = 0
@@ -169,7 +169,7 @@ struct ContentView: View {
     }
     
     func checkAnswer(answer: Int) {
-        if answer == currentAnswer {
+        if answer == correctAnswer {
             score += 1
         } else {
             print("wrong")
