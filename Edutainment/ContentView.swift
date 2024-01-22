@@ -11,17 +11,17 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var animalImage = ["bear", "giraffe","chick", "crocodile", "owl", "penguin", "zebra", "whale", "walrus", "snake", "sloth", "pig", "monkey"]
-    @State private var questionsAndAnswer: [String : Int] = [:]
+    @State private var questionsAndAnswer: [String : String] = [:]
     @State private var animationAmount = 1.0
     @State private var currentQuestion: String = ""
-    private var correctAnswer: Int {
-        questionsAndAnswer[currentQuestion] ?? 0
+    private var correctAnswer: String {
+        questionsAndAnswer[currentQuestion] ?? "0"
     }
     @State private var timesTables = 6
     @State private var questionAmount = 10
     @State private var questionsAnswered = 0
     @State private var score = 0
-    @State var userAnswer = 0
+    @State private var userAnswer = ""
     @State private var appIsActive = false
     @State private var isGameOver = false
     var body: some View {
@@ -87,7 +87,7 @@ struct ContentView: View {
                             .font(.headline)
                             .padding()
                         HStack {
-                                TextField("Answer", value: $userAnswer, formatter: NumberFormatter())
+                                TextField("Answer", text: $userAnswer)
                                 .textFieldStyle(.roundedBorder)
                                     .padding(10)
                                     .font(.headline).multilineTextAlignment(.center)
@@ -102,7 +102,7 @@ struct ContentView: View {
                                 withAnimation {
                                     animalImage = animalImage.shuffled()
                                 }
-                                userAnswer = 0
+                                userAnswer = ""
                             }.frame(width: 50, height: 50)
                                 .background(.blue)
                                 .foregroundStyle(.white)
@@ -151,7 +151,7 @@ struct ContentView: View {
     func createQuestionAndAnswer(number: Int) {
         for i in 2...number {
             for j in 1...12 {
-                questionsAndAnswer["\(i) x \(j)"] = i * j
+                questionsAndAnswer["\(i) x \(j)"] = "\(i * j)"
             }
         }
         print(questionsAndAnswer)
@@ -168,7 +168,7 @@ struct ContentView: View {
         }
     }
     
-    func checkAnswer(answer: Int) {
+    func checkAnswer(answer: String) {
         if answer == correctAnswer {
             score += 1
         } else {
