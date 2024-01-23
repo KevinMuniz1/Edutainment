@@ -71,12 +71,6 @@ struct ContentView: View {
                 animationAmount = 360.0
             }
         } else {
-            Text("Edutainment")
-                .font(.title).bold()
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .padding()
-                .background(.blue)
-                .foregroundStyle(.white)
                 VStack{
                     VStack(spacing: 15){
                         Text(currentQuestion)
@@ -93,9 +87,6 @@ struct ContentView: View {
                                     .font(.headline).multilineTextAlignment(.center)
                                     .clipShape(.rect(cornerRadius: 10))
                                     .keyboardType(.numberPad).ignoresSafeArea(.all)
-                                    .onSubmit {
-                                        
-                                    }
                             Button("Go"){
                                 checkAnswer(answer: userAnswer)
                                 askQuestion()
@@ -137,7 +128,6 @@ struct ContentView: View {
                             
                             Button("Change Settings") {
                                 questionsAndAnswer.removeAll()
-                                print(questionsAndAnswer)
                                 withAnimation {
                                     appIsActive = false
                                 }
@@ -155,7 +145,6 @@ struct ContentView: View {
                 questionsAndAnswer["\(i) x \(j)"] = "\(i * j)"
             }
         }
-        print(questionsAndAnswer)
     }
     
     
@@ -173,7 +162,9 @@ struct ContentView: View {
         if answer == correctAnswer {
                 score += 1
         } else {
-            print("wrong")
+            if score > 0 {
+                score -= 1
+            }
         }
     }
 
